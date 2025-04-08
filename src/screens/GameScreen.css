@@ -1,0 +1,47 @@
+.game-screen {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .game-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 30px;
+  }
+  
+  .clue-log {
+    background: #f8f8f8;
+    padding: 20px;
+    border-radius: 8px;
+    max-height: 70vh;
+    overflow-y: auto;
+  }
+  
+  .clue-item {
+    margin-bottom: 10px;
+    padding: 8px;
+    background: white;
+    border-radius: 4px;
+  }
+  
+  .add-clue {
+    display: flex;
+    margin-top: 15px;
+  }
+  
+  .add-clue input {
+    flex-grow: 1;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px 0 0 4px;
+  }
+  
+  .add-clue button {
+    padding: 0 15px;
+    background: #8a2be2;
+    color: white;
+    border: none;
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
+  }

@@ -1,14 +1,5 @@
 import { suspects, weapons, locations } from ".";
-
-export interface Mystery {
-  id: number;
-  solution: {
-    suspectId: number;
-    weaponId: number;
-    locationId: number;
-  };
-  clues: string[];
-}
+import type { Mystery } from "./types";
 
 export const mysteries: Mystery[] = [
   {
@@ -21,6 +12,7 @@ export const mysteries: Mystery[] = [
     clues: [
       "На полу найдены фиолетовые нити",
       "В чашке обнаружен яд",
+      "Камеры в библиотеке не работали",
     ],
   },
 ];

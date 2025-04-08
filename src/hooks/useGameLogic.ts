@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Mystery, mysteries } from '../data/mysteries';
+import { type Mystery, mysteries } from '../data';
 import { suspects, weapons, locations } from '../data';
 import { generateClues } from '../utils/generateClues';
 import { randomChoice } from '../utils/helpers';

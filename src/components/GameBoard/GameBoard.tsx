@@ -7,10 +7,19 @@ interface GameBoardProps {
   suspects: Suspect[];
   weapons: Weapon[];
   locations: Location[];
-  onSubmit: (solution: { suspect: Suspect; weapon: Weapon; location: Location }) => void;
+  onSubmit: (solution: {
+    suspect: Suspect;
+    weapon: Weapon;
+    location: Location;
+  }) => void;
 }
 
-export const GameBoard = ({ suspects, weapons, locations, onSubmit }: GameBoardProps) => {
+export const GameBoard = ({ 
+  suspects, 
+  weapons, 
+  locations, 
+  onSubmit 
+}: GameBoardProps) => {
   const [grid, setGrid] = useState<CellValue[][]>(
     Array(suspects.length).fill(null).map(() => Array(weapons.length).fill(null))
   );
