@@ -1,0 +1,85 @@
+.clue-log {
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  padding: 20px;
+  color: #333;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.clue-log h3 {
+  color: #6c5ce7;
+  margin-top: 0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e0e0e0;
+  font-weight: 500;
+}
+
+.clues-list {
+  flex-grow: 1;
+  overflow-y: auto;
+  max-height: 400px;
+  margin-bottom: 15px;
+  padding-right: 8px;
+}
+
+.clue-item {
+  padding: 10px 12px;
+  margin-bottom: 10px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  display: flex;
+  gap: 8px;
+  line-height: 1.5;
+  transition: transform 0.2s;
+}
+
+.clue-item:hover {
+  transform: translateY(-2px);
+}
+
+.clue-number {
+  color: #6c5ce7;
+  font-weight: 500;
+}
+
+.add-clue {
+  display: flex;
+  margin-top: auto;
+  gap: 8px;
+}
+
+.add-clue input {
+  flex-grow: 1;
+  padding: 10px 12px;
+  background-color: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  color: #333;
+  font-size: 14px;
+  transition: border 0.2s;
+}
+
+.add-clue input:focus {
+  outline: none;
+  border-color: #6c5ce7;
+}
+
+.add-clue button {
+  background-color: #6c5ce7;
+  color: white;
+  border: none;
+  padding: 0 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.add-clue button:hover {
+  background-color: #5d4aec;
+}

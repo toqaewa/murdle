@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Suspect, Weapon, Location } from '../../data/types';
+import "./GameBoard.css";
 
 type CellValue = '❌' | '❓' | '✅' | null;
 
@@ -20,8 +21,16 @@ export const GameBoard = ({
   locations, 
   onSubmit 
 }: GameBoardProps) => {
-  const [grid, setGrid] = useState<CellValue[][]>(
+  const [swGrid, setSwGrid] = useState<CellValue[][]>(
     Array(suspects.length).fill(null).map(() => Array(weapons.length).fill(null))
+  );
+  
+  const [slGrid, setSlGrid] = useState<CellValue[][]>(
+    Array(suspects.length).fill(null).map(() => Array(locations.length).fill(null))
+  );
+  
+  const [wlGrid, setWlGrid] = useState<CellValue[][]>(
+    Array(weapons.length).fill(null).map(() => Array(locations.length).fill(null))
   );
 
   const [solution, setSolution] = useState<{
@@ -30,69 +39,132 @@ export const GameBoard = ({
     location: Location | null;
   }>({ suspect: null, weapon: null, location: null });
 
-  const handleCellClick = (row: number, col: number) => {
-    setGrid(prev => {
-      const newGrid = [...prev];
-      const current = newGrid[row][col];
-      
-      newGrid[row][col] = 
-        current === null ? '❓' :
-        current === '❓' ? '✅' :
-        current === '✅' ? '❌' : null;
-
-      // Автоматическое проставление ❌ в конфликтующих клетках
-      if (newGrid[row][col] === '✅') {
-        for (let i = 0; i < suspects.length; i++) {
-          if (i !== row) newGrid[i][col] = '❌';
-        }
-        for (let j = 0; j < weapons.length; j++) {
-          if (j !== col) newGrid[row][j] = '❌';
-        }
-      }
-
-      return newGrid;
-    });
+  // Обработчики кликов для каждой матрицы
+  const handleSwClick = (row: number, col: number) => {
+    setSwGrid(prev => updateGrid(prev, row, col));
   };
 
-  const handleSubmit = () => {
-    if (solution.suspect && solution.weapon && solution.location) {
-      onSubmit({
-        suspect: solution.suspect,
-        weapon: solution.weapon,
-        location: solution.location
-      });
+  const handleSlClick = (row: number, col: number) => {
+    setSlGrid(prev => updateGrid(prev, row, col));
+  };
+
+  const handleWlClick = (row: number, col: number) => {
+    setWlGrid(prev => updateGrid(prev, row, col));
+  };
+
+  const updateGrid = (prev: CellValue[][], row: number, col: number) => {
+    const newGrid = [...prev];
+    const current = newGrid[row][col];
+    
+    newGrid[row][col] = 
+      current === null ? '❓' :
+      current === '❓' ? '✅' :
+      current === '✅' ? '❌' : null;
+
+    if (newGrid[row][col] === '✅') {
+      for (let i = 0; i < newGrid.length; i++) {
+        if (i !== row) newGrid[i][col] = '❌';
+      }
+      for (let j = 0; j < newGrid[row].length; j++) {
+        if (j !== col) newGrid[row][j] = '❌';
+      }
     }
+
+    return newGrid;
   };
 
   return (
     <div className="game-board">
-      <h2>SUSPECTS × WEAPONS</h2>
-      <div className="grid">
-        <div className="header-row">
-          <div className="header-cell"></div>
-          {weapons.map(w => (
-            <div key={w.id} className="header-cell">{w.name}</div>
+      <h2 className="matrix-title">Детективная матрица</h2>
+      
+      <div className="corner-matrix-container">
+        {/* Пустой угол */}
+        <div></div>
+        
+        {/* Заголовки подозреваемых (горизонтальные) */}
+        <div className="suspects-header">
+          {suspects.map(suspect => (
+            <div key={`sh-${suspect.id}`} className="header-cell suspect-header">
+              {suspect.name}
+            </div>
           ))}
         </div>
         
-        {suspects.map((suspect, row) => (
-          <div key={suspect.id} className="grid-row">
-            <div className="header-cell">{suspect.name}</div>
-            {weapons.map((weapon, col) => (
-              <div
-                key={`${row}-${col}`}
-                className={`cell ${grid[row][col] || 'empty'}`}
-                onClick={() => handleCellClick(row, col)}
-              >
-                {grid[row][col]}
+        {/* Заголовки оружий (вертикальные) */}
+        <div className="weapons-header">
+          {weapons.map(weapon => (
+            <div key={`wh-${weapon.id}`} className="header-cell weapon-header">
+              {weapon.name}
+            </div>
+          ))}
+        </div>
+        
+        {/* Заголовки мест (диагональные) */}
+        <div className="locations-header">
+          {locations.map(location => (
+            <div key={`lh-${location.id}`} className="header-cell location-header">
+              {location.name}
+            </div>
+          ))}
+        </div>
+        
+        {/* Основная матрица */}
+        <div className="matrix-grid">
+          {/* Suspects × Weapons (основной квадрат) */}
+          <div className="sw-matrix">
+            {suspects.map((suspect, sIdx) => (
+              <div key={`sw-r-${suspect.id}`} className="matrix-row">
+                {weapons.map((weapon, wIdx) => (
+                  <div
+                    key={`sw-c-${weapon.id}`}
+                    className={`matrix-cell ${swGrid[sIdx][wIdx] || 'empty'}`}
+                    onClick={() => handleSwClick(sIdx, wIdx)}
+                  >
+                    {swGrid[sIdx][wIdx]}
+                  </div>
+                ))}
               </div>
             ))}
           </div>
-        ))}
+          
+          {/* Weapons × Locations (правый квадрат) */}
+          <div className="wl-matrix">
+            {weapons.map((weapon, wIdx) => (
+              <div key={`wl-r-${weapon.id}`} className="matrix-row">
+                {locations.map((location, lIdx) => (
+                  <div
+                    key={`wl-c-${location.id}`}
+                    className={`matrix-cell ${wlGrid[wIdx][lIdx] || 'empty'}`}
+                    onClick={() => handleWlClick(wIdx, lIdx)}
+                  >
+                    {wlGrid[wIdx][lIdx]}
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+          
+          {/* Suspects × Locations (нижний квадрат) */}
+          <div className="sl-matrix">
+            {suspects.map((suspect, sIdx) => (
+              <div key={`sl-r-${suspect.id}`} className="matrix-row">
+                {locations.map((location, lIdx) => (
+                  <div
+                    key={`sl-c-${location.id}`}
+                    className={`matrix-cell ${slGrid[sIdx][lIdx] || 'empty'}`}
+                    onClick={() => handleSlClick(sIdx, lIdx)}
+                  >
+                    {slGrid[sIdx][lIdx]}
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
-
+      
       <div className="solution-form">
-        <h3>SOLUTION</h3>
+        <h3>Ваше решение</h3>
         <div className="selectors">
           <select
             value={solution.suspect?.id || ''}
@@ -101,9 +173,9 @@ export const GameBoard = ({
               suspect: suspects.find(s => s.id === Number(e.target.value)) || null
             })}
           >
-            <option value="">Who?</option>
+            <option value="">Кто?</option>
             {suspects.map(s => (
-              <option key={s.id} value={s.id}>{s.name}</option>
+              <option key={`opt-s-${s.id}`} value={s.id}>{s.name}</option>
             ))}
           </select>
 
@@ -114,9 +186,9 @@ export const GameBoard = ({
               weapon: weapons.find(w => w.id === Number(e.target.value)) || null
             })}
           >
-            <option value="">With what?</option>
+            <option value="">Чем?</option>
             {weapons.map(w => (
-              <option key={w.id} value={w.id}>{w.name}</option>
+              <option key={`opt-w-${w.id}`} value={w.id}>{w.name}</option>
             ))}
           </select>
 
@@ -127,18 +199,19 @@ export const GameBoard = ({
               location: locations.find(l => l.id === Number(e.target.value)) || null
             })}
           >
-            <option value="">Where?</option>
+            <option value="">Где?</option>
             {locations.map(l => (
-              <option key={l.id} value={l.id}>{l.name}</option>
+              <option key={`opt-l-${l.id}`} value={l.id}>{l.name}</option>
             ))}
           </select>
         </div>
 
         <button
-          onClick={handleSubmit}
+          onClick={() => onSubmit(solution as any)}
           disabled={!solution.suspect || !solution.weapon || !solution.location}
+          className="solve-button"
         >
-          SOLVE
+          Проверить решение
         </button>
       </div>
     </div>

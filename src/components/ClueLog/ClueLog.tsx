@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import "./ClueLog.css"
 
 interface ClueLogProps {
   clues: string[];
