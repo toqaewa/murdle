@@ -9,10 +9,5 @@ export const mysteries: Mystery[] = [
       weaponId: weapons[1].id,
       locationId: locations[0].id,
     },
-    clues: [
-      "На полу найдены фиолетовые нити",
-      "В чашке обнаружен яд",
-      "Камеры в библиотеке не работали",
-    ],
   },
 ];

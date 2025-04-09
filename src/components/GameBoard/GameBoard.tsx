@@ -13,13 +13,15 @@ interface GameBoardProps {
     weapon: Weapon;
     location: Location;
   }) => void;
+  isSolved: boolean;
 }
 
 export const GameBoard = ({ 
   suspects, 
   weapons, 
   locations, 
-  onSubmit 
+  onSubmit,
+  isSolved, 
 }: GameBoardProps) => {
   const [swGrid, setSwGrid] = useState<CellValue[][]>(
     Array(suspects.length).fill(null).map(() => Array(weapons.length).fill(null))
@@ -81,29 +83,30 @@ export const GameBoard = ({
         {/* Пустой угол */}
         <div></div>
         
-        {/* Заголовки подозреваемых (горизонтальные) */}
+        {/* горизонтальные заголовки */}
         <div className="suspects-header">
           {suspects.map(suspect => (
             <div key={`sh-${suspect.id}`} className="header-cell suspect-header">
-              {suspect.name}
+              {suspect.icon}
+            </div>
+          ))}
+          {locations.map(location => (
+            <div key={`lh-${location.id}`} className="header-cell location-header">
+              {location.icon}
             </div>
           ))}
         </div>
         
-        {/* Заголовки оружий (вертикальные) */}
+        {/* вертикальные заголовки */}
         <div className="weapons-header">
           {weapons.map(weapon => (
             <div key={`wh-${weapon.id}`} className="header-cell weapon-header">
-              {weapon.name}
+              {weapon.icon}
             </div>
           ))}
-        </div>
-        
-        {/* Заголовки мест (диагональные) */}
-        <div className="locations-header">
           {locations.map(location => (
             <div key={`lh-${location.id}`} className="header-cell location-header">
-              {location.name}
+              {location.icon}
             </div>
           ))}
         </div>
@@ -211,8 +214,12 @@ export const GameBoard = ({
           disabled={!solution.suspect || !solution.weapon || !solution.location}
           className="solve-button"
         >
-          Проверить решение
+          {isSolved ? 'Решено!' : 'Проверить решение'}
         </button>
+
+        <div>
+          {}
+        </div>
       </div>
     </div>
   );

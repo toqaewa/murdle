@@ -1,37 +1,60 @@
 import { useState } from 'react';
 import { type Mystery, mysteries } from '../data';
-import { suspects, weapons, locations } from '../data';
+import { type Suspect, suspects } from '../data';
+import { type Weapon, weapons } from '../data';
+import { type Location, locations } from '../data';
+// import { suspects, weapons, locations } from '../data';
 import { generateClues } from '../utils/generateClues';
 import { randomChoice } from '../utils/helpers';
 
-export const useGameLogic = () => {
-    const [currentMystery, setCurrentMystery] = useState<Mystery>(() => {
-        const mystery = randomChoice(mysteries);
-        return {
-          ...mystery,
-          clues: generateClues({
-            suspect: suspects.find(s => s.id === mystery.solution.suspectId)!,
-            weapon: weapons.find(w => w.id === mystery.solution.weaponId)!,
-            location: locations.find(l => l.id === mystery.solution.locationId)!
-          }, 7) // Генерируем 7 подсказок
-        };
-      });
+// количество подсказок пока захардкожено
+export const useGameLogic = (mysteries: Mystery[], initialCluesCount: number = 7) => {
+  const [currentMystery] = useState(mysteries[0]);
+  const [clues] = useState(() => {
+    const solution = {
+      suspect: suspects.find(s => s.id === currentMystery.solution.suspectId)!,
+      weapon: weapons.find(w => w.id === currentMystery.solution.weaponId)!,
+      location: locations.find(l => l.id === currentMystery.solution.locationId)!
+    };
+    return generateClues(solution, initialCluesCount);
+  });
+  
+  const [result, setResult] = useState<{
+    isSolved: boolean;
+    message: string;
+  }>({ isSolved: false, message: '' });
 
-  const [selected, setSelected] = useState({ suspect: null, weapon: null, location: null });
-  const [clues, setClues] = useState<string[]>(currentMystery.clues);
-
-  const checkSolution = () => {
+  const checkSolution = (playerSolution: {
+    suspect: Suspect;
+    weapon: Weapon;
+    location: Location;
+  }) => {
     const isCorrect = 
-      selected.suspect === currentMystery.solution.suspectId &&
-      selected.weapon === currentMystery.solution.weaponId &&
-      selected.location === currentMystery.solution.locationId;
-    
-    if (isCorrect) {
-      setClues([...clues, "✅ Вы раскрыли дело!"]);
-    } else {
-      setClues([...clues, "❌ Неверно. Ищите новые улики."]);
-    }
+      playerSolution.suspect.id === currentMystery.solution.suspectId &&
+      playerSolution.weapon.id === currentMystery.solution.weaponId &&
+      playerSolution.location.id === currentMystery.solution.locationId;
+
+    setResult({
+      isSolved: isCorrect,
+      message: isCorrect ? "✅ Верно!" : "❌ Неверно! Продолжайте расследование"
+    });
+
+    return isCorrect;
   };
 
-  return { suspects, weapons, locations, clues, selected, setSelected, checkSolution };
+  const resetGame = () => {
+    setResult({ isSolved: false, message: '' });
+    // возможно сюда надо вынести сброс всех стейтов
+  };
+
+  return {
+    currentMystery,
+    clues,
+    result,
+    checkSolution,
+    resetGame,
+    suspects,
+    weapons,
+    locations
+  };
 };

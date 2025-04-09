@@ -1,6 +1,7 @@
 export interface BaseEntity {
     id: number;
     name: string;
+    icon: string;
 } 
 
 export interface Suspect extends BaseEntity {
@@ -12,13 +13,11 @@ export interface Suspect extends BaseEntity {
 }
   
 export interface Weapon extends BaseEntity {
-    clue: string;
     requiresSkill?: boolean;  // Нужен ли навык для использования
     fingerprintId?: number;   // Чьи отпечатки (suspectId)
 }
   
 export interface Location extends BaseEntity {
-    clue: string;
     isOutdoor?: boolean;
     hasSecurity?: boolean;
 }
@@ -30,5 +29,4 @@ export interface Mystery {
         weaponId: number;
         locationId: number;
     };
-    clues: string[];
 }

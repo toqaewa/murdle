@@ -1,21 +1,10 @@
-import { useState } from 'react';
 import "./ClueLog.css"
 
 interface ClueLogProps {
   clues: string[];
-  onNewClue?: (clue: string) => void;
 }
 
-export const ClueLog = ({ clues, onNewClue }: ClueLogProps) => {
-  const [newClue, setNewClue] = useState('');
-
-  const handleAddClue = () => {
-    if (newClue.trim() && onNewClue) {
-      onNewClue(newClue);
-      setNewClue('');
-    }
-  };
-
+export const ClueLog = ({ clues }: ClueLogProps) => {
   return (
     <div className="clue-log">
       <h3>Журнал подсказок</h3>
@@ -27,18 +16,6 @@ export const ClueLog = ({ clues, onNewClue }: ClueLogProps) => {
           </div>
         ))}
       </div>
-      
-      {onNewClue && (
-        <div className="add-clue">
-          <input
-            type="text"
-            value={newClue}
-            onChange={(e) => setNewClue(e.target.value)}
-            placeholder="Добавить свою подсказку..."
-          />
-          <button onClick={handleAddClue}>+</button>
-        </div>
-      )}
     </div>
   );
 };
